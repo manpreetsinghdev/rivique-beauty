@@ -1,10 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import type { Service } from "@/types";
+interface BookingService {
+  id: string;
+  title?: string;
+  name?: string;
+}
 
 interface BookingFormProps {
-  services: Service[];
+  services: BookingService[];
 }
 
 

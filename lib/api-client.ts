@@ -111,7 +111,12 @@ export function upsertAvailability(vendorId: string, slot: Record<string, unknow
     body: JSON.stringify(slot),
   });
 }
-export function fetchVendorAnalytics(vendorId: string) {
+export function fetchVendorAnalytics(vendorId: string): Promise<{
+  totalBookings: number;
+  confirmedBookings: number;
+  cancelledBookings: number;
+  revenue: number;
+}> {
   return request(
     `/api/vendor/analytics?vendorId=${vendorId}`
   );
