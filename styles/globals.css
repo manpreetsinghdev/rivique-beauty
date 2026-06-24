@@ -1,0 +1,216 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Google Fonts: Playfair Display + Poppins + Great Vibes ─────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600&family=Great+Vibes&display=swap");
+
+/* ─── CSS Custom Properties ──────────────────────────────────────────────── */
+:root {
+  --font-playfair:    "Playfair Display", Georgia, serif;
+  --font-poppins:     "Poppins", system-ui, sans-serif;
+  --font-great-vibes: "Great Vibes", cursive;
+
+  /* Brand colours as raw values for use in rgba() */
+  --color-rose-gold:  212 163 115;
+  --color-champagne:  233 196 106;
+  --color-soft-pink:  248 215 218;
+  --color-ivory:      255 248 242;
+  --color-ink:        17 17 17;
+
+  /* Glass surface tokens */
+  --glass-bg:         rgba(255, 248, 242, 0.72);
+  --glass-bg-dark:    rgba(17, 17, 17, 0.65);
+  --glass-border:     rgba(212, 163, 115, 0.25);
+  --glass-border-hover: rgba(212, 163, 115, 0.55);
+}
+
+/* ─── Base Layer ─────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-ivory-200 text-ink font-sans text-body-md;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif text-ink;
+  }
+
+  ::selection {
+    background: rgba(var(--color-rose-gold) / 0.25);
+    color: #111111;
+  }
+
+  ::-webkit-scrollbar       { width: 5px; }
+  ::-webkit-scrollbar-track { @apply bg-ivory-300; }
+  ::-webkit-scrollbar-thumb { @apply bg-rose-gold-400 rounded-pill; }
+
+  a { @apply transition-colors duration-250; }
+  img { @apply select-none; }
+}
+
+/* ─── Component Layer ────────────────────────────────────────────────────── */
+@layer components {
+
+  /* ── Buttons ── */
+
+  /* Shared base — applied to all btn-* */
+  [class*="btn-"] {
+    @apply inline-flex items-center justify-center gap-2
+           font-sans font-medium tracking-[0.12em] uppercase
+           select-none transition-all duration-350
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+           disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  /* Primary — dark filled */
+  .btn-primary {
+    @apply px-8 py-3.5 text-label
+           bg-ink text-ivory-200 rounded-lg
+           hover:bg-ink-800 hover:shadow-luxury
+           active:shadow-inset-luxury
+           focus-visible:ring-rose-gold-400;
+  }
+
+  /* Secondary — rose-gold filled */
+  .btn-secondary {
+    @apply px-8 py-3.5 text-label
+           bg-rose-gold-400 text-white rounded-lg
+           hover:bg-rose-gold-500 hover:shadow-luxury
+           active:bg-rose-gold-600
+           focus-visible:ring-rose-gold-400;
+  }
+
+  /* Ghost — outlined */
+  .btn-ghost {
+    @apply px-8 py-3.5 text-label
+           border border-ink/30 text-ink bg-transparent rounded-lg
+           hover:border-rose-gold-400 hover:text-rose-gold-500 hover:bg-rose-gold-50/40
+           active:bg-rose-gold-100/60
+           focus-visible:ring-rose-gold-400;
+  }
+
+  /* Luxury — gold gradient, premium feel */
+  .btn-luxury {
+    @apply relative px-10 py-4 text-label overflow-hidden
+           bg-gradient-gold text-ink font-semibold rounded-xl
+           shadow-luxury hover:shadow-luxury-lg
+           hover:scale-[1.02] active:scale-[0.98]
+           focus-visible:ring-champagne-400;
+  }
+  /* Shimmer sweep on hover */
+  .btn-luxury::after {
+    content: "";
+    @apply absolute inset-0 bg-shimmer-gold bg-[length:200%_100%]
+           opacity-0 transition-opacity duration-400;
+  }
+  .btn-luxury:hover::after {
+    @apply opacity-100 animate-shimmer;
+  }
+
+  /* ── Cards ── */
+
+  /* Base card */
+  .card {
+    @apply bg-white rounded-2xl shadow-md
+           border border-ink/[0.06]
+           transition-shadow duration-350;
+  }
+  .card:hover {
+    @apply shadow-lg;
+  }
+
+  /* Luxury card — elevated with gold shadow */
+  .card-luxury {
+    @apply bg-white rounded-3xl shadow-luxury
+           border border-rose-gold-200
+           transition-all duration-400;
+  }
+  .card-luxury:hover {
+    @apply shadow-luxury-lg -translate-y-0.5;
+  }
+
+  /* Glassmorphism card — light */
+  .card-glass {
+    @apply rounded-3xl shadow-glass
+           border border-white/40
+           backdrop-blur-lg
+           transition-all duration-400;
+    background: var(--glass-bg);
+  }
+  .card-glass:hover {
+    @apply shadow-glass-lg;
+    border-color: var(--glass-border-hover);
+  }
+
+  /* Glassmorphism card — dark */
+  .card-glass-dark {
+    @apply rounded-3xl shadow-glass
+           border border-white/10
+           backdrop-blur-lg
+           transition-all duration-400;
+    background: var(--glass-bg-dark);
+  }
+  .card-glass-dark:hover {
+    @apply shadow-luxury border-rose-gold-400/30;
+  }
+
+  /* ── Typography helpers ── */
+
+  .section-label {
+    @apply font-sans text-label uppercase tracking-[0.2em]
+           text-rose-gold-400 font-medium;
+  }
+
+  .section-heading {
+    @apply font-serif text-display-md text-ink leading-tight;
+  }
+
+  .display-script {
+    @apply font-script text-rose-gold-400;
+  }
+
+  /* ── Divider ── */
+  .divider-ornament {
+    @apply flex items-center gap-4
+           before:flex-1 before:h-px before:bg-rose-gold-200
+           after:flex-1  after:h-px  after:bg-rose-gold-200;
+  }
+
+  /* ── Form elements ── */
+  .input-luxury {
+    @apply w-full bg-white/70 backdrop-blur-sm
+           border border-rose-gold-200 rounded-lg
+           px-4 py-3 font-sans text-body-sm text-ink
+           placeholder:text-ink-300
+           focus:outline-none focus:border-rose-gold-400
+           focus:ring-2 focus:ring-rose-gold-400/20
+           transition-all duration-250;
+  }
+
+  .label-luxury {
+    @apply font-sans text-label uppercase tracking-widest text-ink-500 mb-1.5 block;
+  }
+
+  /* ── Badge ── */
+  .badge {
+    @apply inline-flex items-center gap-1 px-3 py-1
+           font-sans text-xs font-medium tracking-wide
+           rounded-pill border;
+  }
+  .badge-gold {
+    @apply badge bg-champagne-100 text-champagne-600 border-champagne-300;
+  }
+  .badge-pink {
+    @apply badge bg-soft-pink-200 text-soft-pink-600 border-soft-pink-400;
+  }
+  .badge-dark {
+    @apply badge bg-ink text-ivory-200 border-transparent;
+  }
+}

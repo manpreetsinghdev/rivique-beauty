@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<body style="font-family:sans-serif;color:#1a1a1a;max-width:600px;margin:0 auto;padding:32px">
+  <h1 style="font-size:22px;font-weight:600">Payment Receipt</h1>
+  <p>Hi {{firstName}}, your payment was received successfully.</p>
+  <table style="width:100%;border-collapse:collapse;margin-top:24px">
+    <tr><td style="padding:8px 0;color:#666">Amount</td>   <td style="padding:8px 0;font-weight:500">{{currency}} {{amount}}</td></tr>
+    <tr><td style="padding:8px 0;color:#666">Provider</td> <td style="padding:8px 0;font-weight:500">{{provider}}</td></tr>
+    <tr><td style="padding:8px 0;color:#666">Date</td>     <td style="padding:8px 0;font-weight:500">{{createdAt}}</td></tr>
+    <tr><td style="padding:8px 0;color:#666">Ref</td>      <td style="padding:8px 0;font-weight:500">{{providerPaymentId}}</td></tr>
+  </table>
+  <p style="margin-top:32px;font-size:13px;color:#888">Rivique Beauty — keep this email as your receipt.</p>
+</body>
+</html>

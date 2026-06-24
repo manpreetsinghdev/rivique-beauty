@@ -1,0 +1,202 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CLIENT
+  VENDOR
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  REFUNDED
+  FAILED
+}
+
+enum Currency {
+  INR
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  firstName    String
+  lastName     String
+  passwordHash String?  @db.Text
+  phone        String?
+  avatarUrl    String?
+  role         UserRole @default(CLIENT)
+  isActive     Boolean  @default(true)
+
+  // relations
+  vendors  Vendor[]              @relation("ownerVendors")
+  bookings Booking[]
+  reviews  Review[]
+  aiLogs   AIRecommendationLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([role])
+}
+
+model Vendor {
+  id          String  @id @default(uuid())
+  name        String
+  slug        String  @unique
+  description String?
+  ownerId     String?
+  owner       User?   @relation("ownerVendors", fields: [ownerId], references: [id])
+
+  city    String?
+  state   String?
+  country String? @default("India")
+
+  ratingAvg   Float @default(0)
+  ratingCount Int   @default(0)
+
+  services     Service[]
+  bookings     Booking[]
+  availability AvailabilitySlot[]
+  aiLogs       AIRecommendationLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Review    Review[]
+
+  @@index([city])
+  @@index([state])
+  @@index([ratingAvg])
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  vendorId    String
+  vendor      Vendor   @relation(fields: [vendorId], references: [id])
+  title       String
+  description String?
+  durationMin Int
+  pricePaise  Int // price stored in paise (INR)
+  currency    Currency @default(INR)
+  active      Boolean  @default(true)
+
+  bookings Booking[]
+  aiLogs   AIRecommendationLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Review    Review[]
+
+  @@index([vendorId])
+  @@index([title])
+}
+
+model Booking {
+  id        String  @id @default(uuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+  vendorId  String
+  vendor    Vendor  @relation(fields: [vendorId], references: [id])
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  start      DateTime
+  end        DateTime
+  status     BookingStatus @default(PENDING)
+  totalPaise Int
+  notes      String?
+
+  payment Payment?
+  review  Review?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([vendorId, start])
+  @@index([serviceId])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id])
+  serviceId String?
+  service   Service? @relation(fields: [serviceId], references: [id])
+  bookingId String?  @unique
+  booking   Booking? @relation(fields: [bookingId], references: [id])
+
+  rating Int
+  title  String?
+  body   String?
+
+  createdAt DateTime @default(now())
+
+  @@index([vendorId])
+  @@index([authorId])
+}
+
+model AvailabilitySlot {
+  id        String   @id @default(uuid())
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id])
+  start     DateTime
+  end       DateTime
+  isBooked  Boolean  @default(false)
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([vendorId, start])
+}
+
+model Payment {
+  id                String        @id @default(uuid())
+  bookingId         String        @unique
+  booking           Booking       @relation(fields: [bookingId], references: [id])
+  amountPaise       Int
+  currency          Currency      @default(INR)
+  provider          String
+  providerPaymentId String?       @unique
+  status            PaymentStatus @default(PENDING)
+  capturedAt        DateTime?
+  metadata          Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([bookingId])
+  @@index([provider])
+}
+
+model AIRecommendationLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  vendorId  String?
+  vendor    Vendor?  @relation(fields: [vendorId], references: [id])
+  serviceId String?
+  service   Service? @relation(fields: [serviceId], references: [id])
+  input     Json
+  result    Json
+  score     Float?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([vendorId])
+}
