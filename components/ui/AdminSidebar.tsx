@@ -21,14 +21,14 @@ export function AdminSidebar({ adminId }: { adminId?: string }) {
 
       {/* Sidebar */}
       <aside className={`
-        fixed md:sticky top-20 left-0 h-screen md:h-auto z-30
+        fixed md:sticky top-24 left-0 h-screen md:h-auto z-30
         w-64 md:w-auto md:top-20
         bg-gradient-to-b from-rose-900/40 to-ink/20 backdrop-blur-md
         border-r md:border-r md:border-r-0 border-rose-900/10
         transform transition-transform duration-300 md:transform-none
         ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
-        <div className="p-4 md:rounded-lg rounded-none h-full md:h-auto">
+        <div className="pt-8 px-4 pb-4 md:rounded-lg rounded-none h-full md:h-auto">
           <div className="flex items-center justify-between mb-4 md:mb-4">
             <h3 className="font-serif text-lg">Admin</h3>
             <button
@@ -41,26 +41,58 @@ export function AdminSidebar({ adminId }: { adminId?: string }) {
               </svg>
             </button>
           </div>
-          <nav className="flex flex-col gap-2">
-            <Link className="nav-link" href={`/admin/dashboard`} onClick={() => setIsOpen(false)}>
-              Overview
-            </Link>
-            <Link className="nav-link" href={`/admin/dashboard/users`} onClick={() => setIsOpen(false)}>
-              Users
-            </Link>
-            <Link className="nav-link" href={`/admin/dashboard/vendors`} onClick={() => setIsOpen(false)}>
-              Vendors
-            </Link>
-            <Link className="nav-link" href={`/admin/dashboard/reviews`} onClick={() => setIsOpen(false)}>
-              Reviews
-            </Link>
-            <Link className="nav-link" href={`/admin/dashboard/bookings`} onClick={() => setIsOpen(false)}>
-              Bookings
-            </Link>
-            <Link className="nav-link" href={`/admin/dashboard/analytics`} onClick={() => setIsOpen(false)}>
-              Analytics
-            </Link>
-          </nav>
+          <nav className="flex flex-col gap-3">
+  <Link
+    className="px-4 py-3 rounded-xl text-white hover:bg-white/10 transition"
+    href="/dashboard"
+  >
+    Overview
+  </Link>
+
+  <Link
+    className="px-4 py-3 rounded-xl text-white hover:bg-white/10 transition"
+    href="/dashboard/users"
+  >
+    Users
+  </Link>
+
+  <Link
+    className="px-4 py-3 rounded-xl text-white hover:bg-white/10 transition"
+    href="/dashboard/vendors"
+  >
+    Vendors
+  </Link>
+
+  <Link
+    className="px-4 py-3 rounded-xl text-white hover:bg-white/10 transition"
+    href="/dashboard/reviews"
+  >
+    Reviews
+  </Link>
+
+  <Link
+    className="px-4 py-3 rounded-xl text-white hover:bg-white/10 transition"
+    href="/dashboard/bookings"
+  >
+    Bookings
+  </Link>
+
+  <Link
+    className="px-4 py-3 rounded-xl text-white hover:bg-white/10 transition"
+    href="/dashboard/analytics"
+  >
+    Analytics
+  </Link>
+</nav>
+<button
+  onClick={() => {
+    localStorage.removeItem("adminLoggedIn");
+    window.location.href = "/login";
+  }}
+  className="mt-6 bg-red-500 hover:bg-red-600 text-white rounded-xl px-4 py-3"
+>
+  Logout
+</button>
         </div>
       </aside>
 

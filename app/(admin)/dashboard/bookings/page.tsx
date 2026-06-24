@@ -23,7 +23,7 @@ export default function AdminBookings() {
         {bookings.map(b => (
           <div key={b.id} className="card p-4 flex justify-between items-center">
             <div>
-              <p className="font-sans">{b.serviceId} — <span className="text-body-sm text-ivory-200/70">{new Date(b.preferredDate).toLocaleString()} at {b.preferredTime}</span></p>
+              <p className="font-sans">{b.serviceId} — <span className="text-body-sm text-[#6B5B4D]">{new Date(b.preferredDate).toLocaleString()} at {b.preferredTime}</span></p>
               <p className="text-body-sm">{b.firstName} {b.lastName}</p>
             </div>
             <div className="flex gap-2">

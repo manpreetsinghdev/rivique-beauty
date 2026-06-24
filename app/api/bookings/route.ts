@@ -1,101 +1,89 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import type { BookingFormData } from "@/types/booking";
 
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const body: BookingFormData = await request.json();
+    const body = await req.json();
 
-    const required: (keyof BookingFormData)[] = [
-      "firstName",
-      "lastName",
-      "email",
-      "serviceId",
-      "weddingDate",
-      "preferredDate",
-      "preferredTime",
-    ];
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      serviceId,
+      notes,
+    } = body;
 
-    const missing = required.filter((key) => !body[key]);
-
-    if (missing.length > 0) {
+    // Validate service selection
+    if (!serviceId) {
       return NextResponse.json(
-        {
-          success: false,
-          message: `Missing fields: ${missing.join(", ")}`,
-        },
+        { message: "Please select a service" },
         { status: 400 }
       );
     }
 
-    let user = await prisma.user.findUnique({
+    // Find selected service
+    const service = await prisma.service.findUnique({
       where: {
-        email: body.email,
+        id: serviceId,
       },
     });
 
+    if (!service) {
+      return NextResponse.json(
+        { message: "Service not found" },
+        { status: 404 }
+      );
+    }
+
+    // Find existing user
+    let user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    // Create user if not exists
     if (!user) {
       user = await prisma.user.create({
         data: {
-          email: body.email,
-          firstName: body.firstName,
-          lastName: body.lastName,
-          phone: body.phone,
+          firstName,
+          lastName,
+          email,
+          phone,
         },
       });
     }
 
-    const vendor = await prisma.vendor.findFirst();
-
-    if (!vendor) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "No Vendor found",
-        },
-        { status: 400 }
-      );
-    }
-
-    const service = await prisma.service.findFirst();
-
-    if (!service) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "No Service found",
-        },
-        { status: 400 }
-      );
-    }
-
+    // Create booking
     const booking = await prisma.booking.create({
       data: {
         userId: user.id,
-        vendorId: vendor.id,
+        vendorId: service.vendorId,
         serviceId: service.id,
-        start: new Date(body.preferredDate),
-        end: new Date(body.preferredDate),
+        start: new Date(),
+        end: new Date(
+          Date.now() + service.durationMin * 60000
+        ),
         totalPaise: service.pricePaise,
-        notes: body.notes || "",
+        notes,
+        status: "PENDING",
+      },
+      include: {
+        user: true,
+        service: true,
       },
     });
 
-    return NextResponse.json(
-      {
-        success: true,
-        booking,
-      },
-      { status: 201 }
-    );
+    return NextResponse.json({
+      success: true,
+      booking,
+    });
   } catch (error) {
-    console.error(error);
+    console.error("BOOKING ERROR:", error);
 
     return NextResponse.json(
-      {
-        success: false,
-        message: "Booking creation failed",
-      },
+      { message: "Failed to submit booking" },
       { status: 500 }
     );
   }

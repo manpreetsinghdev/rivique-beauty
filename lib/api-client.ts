@@ -111,3 +111,8 @@ export function upsertAvailability(vendorId: string, slot: Record<string, unknow
     body: JSON.stringify(slot),
   });
 }
+export function fetchVendorAnalytics(vendorId: string) {
+  return request(
+    `/api/vendor/analytics?vendorId=${vendorId}`
+  );
+}

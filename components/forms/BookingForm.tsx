@@ -7,6 +7,7 @@ interface BookingFormProps {
   services: Service[];
 }
 
+
 export function BookingForm({ services }: BookingFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -203,42 +204,32 @@ export function BookingForm({ services }: BookingFormProps) {
       </div>
 
       <div className="space-y-1.5">
-        <label className="label-luxury" htmlFor="serviceId">
-          Service of Interest
-        </label>
-        <select
-          id="serviceId"
-          name="serviceId"
-          required
-          value={formData.serviceId}
-          onChange={handleChange}
-          className="input-luxury"
-          disabled={isSubmitting}
-        >
-          <option value="">Select a service…</option>
-          {services.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))}
-        </select>
-      </div>
+  <label className="label-luxury" htmlFor="serviceId">
+    Service of Interest
+  </label>
 
-      <div className="space-y-1.5">
-        <label className="label-luxury" htmlFor="notes">
-          Additional Notes
-        </label>
-        <textarea
-          id="notes"
-          name="notes"
-          rows={4}
-          value={formData.notes}
-          onChange={handleChange}
-          className="input-luxury resize-none"
-          placeholder="Tell us about your vision, theme, or any special requests…"
-          disabled={isSubmitting}
-        />
-      </div>
+  <select
+    id="serviceId"
+    name="serviceId"
+    required
+    value={formData.serviceId}
+    onChange={handleChange}
+    className="input-luxury"
+    disabled={isSubmitting}
+  >
+    <option value="">Select a service...</option>
+
+    {services?.length > 0 ? (
+      services.map((s: any) => (
+        <option key={s.id} value={s.id}>
+          {s.title || s.name || `Service ${s.id}`}
+        </option>
+      ))
+    ) : (
+      <option disabled>No services available</option>
+    )}
+  </select>
+</div>
 
       <button
         type="submit"

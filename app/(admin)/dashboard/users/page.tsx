@@ -14,7 +14,7 @@ export default function AdminUsers() {
   }
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-6 pt-16">
       <div className="flex items-center justify-between">
         <h2 className="font-serif text-2xl">Users</h2>
       </div>

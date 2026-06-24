@@ -1,52 +1,175 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Sparkline } from "@/components/ui/Sparkline";
-import { fetchVendorBookings } from "@/lib/api-client";
-import type { Booking } from "@/types/booking";
 
-export default function DashboardPage({ params }: { params: { vendorId: string } }) {
+import { useEffect, useState } from "react";
+import { fetchVendorBookings } from "@/lib/api-client";
+
+export default function BookingsPage({
+  params,
+}: {
+  params: { vendorId: string };
+}) {
   const vendorId = params.vendorId;
-  const [bookings, setBookings] = useState<Booking[]>([]);
+
+  const [bookings, setBookings] = useState<any[]>([]);
 
   useEffect(() => {
-    fetchVendorBookings(vendorId).then((b) => setBookings(b || []));
+    loadBookings();
   }, [vendorId]);
 
-  const recentCounts = bookings.slice(0, 12).map((_, i) => Math.floor(Math.random() * 8) + 1);
+  const loadBookings = async () => {
+    const data = await fetchVendorBookings(
+      vendorId
+    );
+
+    setBookings(data || []);
+  };
+
+  const updateStatus = async (
+    id: string,
+    status: string
+  ) => {
+    try {
+      await fetch(
+        `/api/vendor/bookings/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            status,
+          }),
+        }
+      );
+
+      loadBookings();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
-    <section className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-serif text-3xl">Overview</h1>
-          <p className="text-body-sm text-ivory-200/70">Welcome back — manage your salon and bookings here.</p>
-        </div>
-        <div>
-          <button className="btn-secondary">New Service</button>
-        </div>
-      </div>
+    <section className="space-y-8">
+      <div>
+        <h2 className="font-serif text-3xl text-ink">
+          Bookings
+        </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="card-glass p-6">
-          <p className="section-label">Upcoming</p>
-          <p className="text-2xl font-semibold">{bookings.filter(b => b.status === 'confirmed').length}</p>
-        </div>
-        <div className="card-glass p-6">
-          <p className="section-label">Requests</p>
-          <p className="text-2xl font-semibold">{bookings.filter(b => b.status === 'pending').length}</p>
-        </div>
-        <div className="card-glass p-6">
-          <p className="section-label">Revenue (est)</p>
-          <p className="text-2xl font-semibold">₹{(bookings.reduce((s, b) => s + (b.totalPrice||0), 0)).toLocaleString()}</p>
-        </div>
+        <p className="text-ink-400 mt-2">
+          Manage all customer appointments
+          and requests.
+        </p>
       </div>
 
       <div className="card-glass p-6">
-        <div className="flex items-center justify-between">
-          <p className="section-label">Bookings (last 12)</p>
-          <p className="text-label text-ivory-200/60">Trend</p>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="font-semibold text-lg">
+            Recent Bookings
+          </h3>
+
+          <span className="px-3 py-1 rounded-full bg-rose-gold-100 text-rose-gold-500 text-sm font-medium">
+            {bookings.length} Total
+          </span>
         </div>
-        <Sparkline data={recentCounts} />
+
+        {bookings.length === 0 ? (
+          <div className="text-center py-10">
+            <p className="text-gray-500">
+              No bookings found
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left py-3">
+                    Customer
+                  </th>
+
+                  <th className="text-left py-3">
+                    Email
+                  </th>
+
+                  <th className="text-left py-3">
+                    Service
+                  </th>
+
+                  <th className="text-left py-3">
+                    Date
+                  </th>
+
+                  <th className="text-left py-3">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {bookings.map((b) => (
+                  <tr
+                    key={b.id}
+                    className="border-b hover:bg-gray-50 transition"
+                  >
+                    <td className="py-4 font-medium">
+                      {b.user?.firstName}{" "}
+                      {b.user?.lastName}
+                    </td>
+
+                    <td className="py-4 text-gray-600">
+                      {b.user?.email}
+                    </td>
+
+                    <td className="py-4">
+                      {b.service?.title}
+                    </td>
+
+                    <td className="py-4">
+                      {new Date(
+                        b.start
+                      ).toLocaleDateString()}
+                    </td>
+
+                    <td className="py-4">
+                      <div className="flex gap-2 items-center">
+
+                        <span className="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-sm font-medium">
+                          {b.status}
+                        </span>
+
+                        <button
+                          onClick={() =>
+                            updateStatus(
+                              b.id,
+                              "CONFIRMED"
+                            )
+                          }
+                          className="px-3 py-1 bg-green-500 text-white rounded"
+                        >
+                          Approve
+                        </button>
+
+                        <button
+                          onClick={() =>
+                            updateStatus(
+                              b.id,
+                              "CANCELLED"
+                            )
+                          }
+                          className="px-3 py-1 bg-red-500 text-white rounded"
+                        >
+                          Reject
+                        </button>
+
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </section>
   );

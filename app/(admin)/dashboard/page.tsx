@@ -1,47 +1,87 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { Sparkline } from '@/components/ui/Sparkline';
-import { fetchAdminOverview } from '@/lib/api-client';
-import type { AdminOverview } from '@/types/admin';
+
+import { useEffect, useState } from "react";
+import { Sparkline } from "@/components/ui/Sparkline";
+import { fetchAdminOverview } from "@/lib/api-client";
+import type { AdminOverview } from "@/types/admin";
 
 export default function AdminOverviewPage() {
   const [data, setData] = useState<AdminOverview | null>(null);
 
-  useEffect(() => { fetchAdminOverview().then(d => setData(d || null)); }, []);
+  useEffect(() => {
+    fetchAdminOverview().then((d) => setData(d || null));
+  }, []);
 
   return (
-    <section className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-serif text-3xl">Platform Overview</h1>
-          <p className="text-body-sm text-ivory-200/70">Manage users, vendors, reviews and bookings.</p>
-        </div>
+    <section className="space-y-8 pt-18">
+      <div>
+      <h1 className="text-4xl font-bold text-[#3B2F2F] mb-2">
+  Admin Dashboard
+</h1>
+
+        <p className="text-gray-400 mt-2">
+          Manage users, vendors, reviews and bookings.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="card-glass p-6">
-          <p className="section-label">Total Users</p>
-          <p className="text-2xl font-semibold">{data?.totalUsers ?? '—'}</p>
+        <div className="bg-white rounded-3xl p-6 shadow-lg">
+          <p className="text-xs uppercase tracking-[0.25em] text-amber-600">
+            Total Users
+          </p>
+
+          <p className="text-4xl font-bold text-black mt-3">
+            {data?.totalUsers ?? 0}
+          </p>
         </div>
-        <div className="card-glass p-6">
-          <p className="section-label">Total Vendors</p>
-          <p className="text-2xl font-semibold">{data?.totalVendors ?? '—'}</p>
+
+        <div className="bg-white rounded-3xl p-6 shadow-lg">
+          <p className="text-xs uppercase tracking-[0.25em] text-amber-600">
+            Total Vendors
+          </p>
+
+          <p className="text-4xl font-bold text-black mt-3">
+            {data?.totalVendors ?? 0}
+          </p>
         </div>
-        <div className="card-glass p-6">
-          <p className="section-label">Pending Bookings</p>
-          <p className="text-2xl font-semibold">{data?.pendingBookings ?? '—'}</p>
+
+        <div className="bg-white rounded-3xl p-6 shadow-lg">
+          <p className="text-xs uppercase tracking-[0.25em] text-amber-600">
+            Pending Bookings
+          </p>
+
+          <p className="text-4xl font-bold text-black mt-3">
+            {data?.pendingBookings ?? 0}
+          </p>
         </div>
-        <div className="card-glass p-6">
-          <p className="section-label">Total Bookings</p>
-          <p className="text-2xl font-semibold">{data?.totalBookings ?? '—'}</p>
+
+        <div className="bg-white rounded-3xl p-6 shadow-lg">
+          <p className="text-xs uppercase tracking-[0.25em] text-amber-600">
+            Total Bookings
+          </p>
+
+          <p className="text-4xl font-bold text-black mt-3">
+            {data?.totalBookings ?? 0}
+          </p>
         </div>
       </div>
 
-      <div className="card-glass p-6">
-        <div className="flex items-center justify-between">
-          <p className="section-label">Bookings (last 12)</p>
-        </div>
-        <Sparkline data={data?.recentBookings ? data.recentBookings.slice(0, 12).map(() => Math.floor(Math.random() * 8)) : Array.from({length:12}).map(()=>Math.floor(Math.random()*8))} />
+      <div className="bg-white rounded-3xl p-6 shadow-lg">
+        <h3 className="text-amber-600 font-semibold mb-4">
+          Bookings (Last 12)
+        </h3>
+
+        <Sparkline
+          data={
+            data?.recentBookings
+              ? data.recentBookings
+                  .slice(0, 12)
+                  .map(() => Math.floor(Math.random() * 8))
+              : Array.from({ length: 12 }).map(() =>
+                  Math.floor(Math.random() * 8)
+                )
+          }
+        />
       </div>
     </section>
   );
