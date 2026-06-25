@@ -21,7 +21,7 @@
 ### 🌐 Live Application
 
 **Rivique Beauty:**
-👉 **[Add Your Live URL Here]**
+👉 **https://rivique-beauty.vercel.app/**
 
 ### 📄 Project Documentation
 
