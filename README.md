@@ -30,7 +30,7 @@
 
 ### 🎥 Demo Video
 
-👉 **[Add Demo Video Link Here]**
+<video src="./public/rivique-beauty-delhi-ncr-startup-website-demo-video-new(2).mp4" controls width="100%"></video>
 
 ---
 
