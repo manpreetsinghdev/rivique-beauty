@@ -30,7 +30,9 @@
 
 ### 🎥 Demo Video
 
-<video src="./public/rivique-beauty-delhi-ncr-startup-website-demo-video-new(2).mp4" controls width="100%"></video>
+<p align="center"> <img src="./public/Rivique%20Beauty%20-github%20-demo-%20video%20-new.gif" alt="Rivique Beauty Demo" width="100%" /> </p>
+
+<p align="center"> <b>Live Preview of Rivique Beauty Platform</b> </p>
 
 ---
 
