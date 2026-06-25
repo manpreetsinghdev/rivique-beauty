@@ -26,7 +26,7 @@
 ### 📄 Project Documentation
 
 **Detailed Project File & Case Study:**
-👉 https://docs.google.com/document/d/1icNO_gzmnNwy0p77_i7bYJaa_voPI_kQrEimIV8yZcU/edit?usp=sharing
+👉 https://docs.google.com/document/d/1icNO_gzmnNwy0p77_i7bYJaa_voPI_kQrEimIV8yZcU/
 
 ### 🎥 Demo Video
 
