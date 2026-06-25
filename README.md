@@ -376,6 +376,7 @@ Built with passion during **Superxgen Buildathon 2026**.
 Special thanks to the Superxgen team for creating an opportunity to innovate, build, and solve real-world problems through technology.
 
 ---
+<iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7475845831057747968" height="2667" width="504" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>
 
 <div align="center">
 
