@@ -292,7 +292,7 @@ http://localhost:3000
 
 # 👨‍💻 Developed By
 
-## Prince Monga
+## Prince Monga || Manpreet Singh
 
 ### Founder • Product Designer • Full Stack Developer
 
